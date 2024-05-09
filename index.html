@@ -90,8 +90,7 @@ transition-duration: 0.4s;
   var player;
   var correctAnswers = ['B', 'D', 'A']; // Initial correct answers
 
-  // Listen for the message event
-  window.addEventListener('message', function(event) {
+window.addEventListener('message', function(event) {
     // Parse the data from the event
     var data = event.data.split(':-');
 
@@ -100,7 +99,9 @@ transition-duration: 0.4s;
       // Update the correct answer at the specified index
       correctAnswers[parseInt(data[0]) - 1] = data[1];
     }
-  }, false);
+    console.log('correctAnswers after update:', correctAnswers);
+}, false);
+
 
 
 
@@ -144,6 +145,7 @@ button.style.backgroundColor = 'red';
       hideButtons(); // Hide buttons after result is displayed
     }, 5000); // Hide result and buttons after 5 seconds
     showCount++;
+    console.log('showCount after increment:', showCount);
 }
 
 
