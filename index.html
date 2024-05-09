@@ -1,31 +1,187 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Receive String from App</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-</head>
 <body>
-    <h1>Receive String from App</h1>
-    <p id="receivedString">Waiting for string...</p>
 
-    <script>
-        // Function to receive data from the MIT App Inventor app
-        function receiveString(data) {
-            document.getElementById('receivedString').innerHTML = data;
+<div id="player" style="position: relative; width: 640px; height: 360px;">
+  <iframe id="ytplayer" width="100%" height="100%" src="https://www.youtube.com/embed/zPuuY7NP4UM?enablejsapi=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+  <div id="overlay" style="position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0); display: none; text-align: center;">
+    <button style="font-size: 30px; margin-right: 25px;" onclick="checkAnswer('A')">A</button>
+    <button style="font-size: 30px; margin-right: 25px;" onclick="checkAnswer('B')">B</button>
+    <button style="font-size: 30px; margin-right: 25px;" onclick="checkAnswer('C')">C</button>
+    <button style="font-size: 30px; margin-right: 25px;" onclick="checkAnswer('D')">D</button>
+    <p style="font-size: 30px;" id="result"></p>
+</div>
+
+  <button id="fullscreenButton" style="position: absolute; bottom: 0px; right: 0px;">Go Fullscreen</button>
+
+<button id="nodistraction" style="position: absolute; top: 0px; right: 0px;">hey</button>
+<button id="nodistraction2" style="position: absolute; bottom: 48px; right: 10px;">hey</button>
+</div>
+
+<style>
+
+
+#nodistraction2 {
+padding: 15px 10px;
+background-color: transparent;
+  color: transparent;
+border: transparent;
+
+  
+}
+#nodistraction {
+padding: 25px 400px;
+background-color: transparent;
+  color: transparent;
+border: transparent;
+  
+}
+#fullscreenButton {
+padding: 8px 16px;
+background-color: transparent;
+  color: red;
+transition-duration: 0.4s;
+}
+#fullscreenButton:hover {
+  background-color: blue; /* Green */
+  color: white;
+}
+</style>
+
+<script>
+  var player;
+  function onYouTubeIframeAPIReady() {
+    player = new YT.Player('ytplayer', {
+      events: {
+        'onStateChange': onPlayerStateChange
+      }
+    });
+  }
+
+  function onPlayerStateChange(event) {
+    if (event.data == YT.PlayerState.PLAYING) {
+      var checkTime1 = setInterval(function() {
+        var time = player.getCurrentTime();
+        if(time >= 60 && time <= 80) {
+          showButtons();
+          clearInterval(checkTime1);
         }
+      }, 1000);
 
-        // Function to check for the string every second
-        function checkString() {
-            if (window.AppInventor) {
-                window.AppInventor.getWebViewString(function (data) {
-                    receiveString(data);
-                });
-            }
+      var checkTime2 = setInterval(function() {
+        var time = player.getCurrentTime();
+        if(time >= 120 && time <= 150) {
+          showButtons();
+          clearInterval(checkTime2);
         }
+      }, 1000);
 
-        // Start checking for the string every second
-        setInterval(checkString, 1000);
-    </script>
+      var checkTime3 = setInterval(function() {
+        var time = player.getCurrentTime();
+        if(time >= 180) {
+          showButtons();
+          clearInterval(checkTime3);
+        }
+      }, 1000);
+    }
+  }
+
+
+  var player;
+  var correctAnswers = ['B', 'D', 'A']; // Initial correct answers
+
+  // Listen for the message event
+  window.addEventListener('message', function(event) {
+    // Parse the data from the event
+    var data = event.data.split(':-');
+
+    // Check if the data is in the expected format
+    if (data.length === 2 && data[0] === '1') {
+      // Update the correct answer at the specified index
+      correctAnswers[parseInt(data[0]) - 1] = data[1];
+    }
+  }, false);
+
+
+
+  function showButtons() {
+    var buttons = document.getElementsByTagName('button');
+    for (var i = 0; i < buttons.length; i++) {
+      buttons[i].style.display = 'inline'; // Show buttons
+    }
+    document.getElementById('overlay').style.display = 'block';
+    setTimeout(hideButtons, 10000); // Hide buttons after 10 seconds
+}
+
+function hideButtons() {
+    var overlay = document.getElementById('overlay');
+    var buttons = overlay.getElementsByTagName('button');
+    for (var i = 0; i < buttons.length; i++) {
+      buttons[i].style.display = 'none'; // Hide buttons
+    }
+    overlay.style.display = 'none'; // Hide overlay
+}
+
+
+function checkAnswer(answer) {
+    var result = document.getElementById('result');
+    if (answer == correctAnswers[showCount]) {
+      
+      result.textContent = "Correct answer!";
+      result.style.color = 'white';
+      result.style.background = 'green';
+button.style.backgroundColor = 'green';
+    } else {
+      result.textContent = "Incorrect answer.";
+      result.style.color = 'white';
+      result.style.background = 'red';
+button.style.backgroundColor = 'red';
+    }
+    result.style.display = 'block'; // Show result immediately
+    setTimeout(function() {
+      result.style.display = 'none';
+      hideButtons(); // Hide buttons after result is displayed
+    }, 5000); // Hide result and buttons after 5 seconds
+    showCount++;
+}
+
+
+  var tag = document.createElement('script');
+  tag.src = "https://www.youtube.com/iframe_api";
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+document.getElementById('fullscreenButton').addEventListener('click', function() {
+    var elem = document.getElementById('player');
+    if (!document.fullscreenElement) {
+        if (elem.requestFullscreen) {
+          elem.requestFullscreen();
+        } else if (elem.mozRequestFullScreen) { /* Firefox */
+          elem.mozRequestFullScreen();
+        } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+          elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) { /* IE/Edge */
+          elem.msRequestFullscreen();
+        }
+        document.getElementById('fullscreenButton').innerText = 'Exit Fullscreen';
+    } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.mozCancelFullScreen) { /* Firefox */
+          document.mozCancelFullScreen();
+        } else if (document.webkitExitFullscreen) { /* Chrome, Safari and Opera */
+          elem.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) { /* IE/Edge */
+          document.msExitFullscreen();
+        }
+        document.getElementById('fullscreenButton').innerText = 'Go Fullscreen';
+    }
+});
+
+</script>
+
+
 </body>
 </html>
+
 
