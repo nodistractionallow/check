@@ -10,46 +10,44 @@
     <button style="font-size: 30px; margin-right: 25px;" onclick="checkAnswer('C')">C</button>
     <button style="font-size: 30px; margin-right: 25px;" onclick="checkAnswer('D')">D</button>
     <p style="font-size: 30px;" id="result"></p>
-</div>
+  </div>
 
   <button id="fullscreenButton" style="position: absolute; bottom: 0px; right: 0px;">Go Fullscreen</button>
 
-<button id="nodistraction" style="position: absolute; top: 0px; right: 0px;">hey</button>
-<button id="nodistraction2" style="position: absolute; bottom: 48px; right: 10px;">hey</button>
+  <button id="nodistraction" style="position: absolute; top: 0px; right: 0px;">hey</button>
+  <button id="nodistraction2" style="position: absolute; bottom: 48px; right: 10px;">hey</button>
 </div>
 
 <style>
-
-
-#nodistraction2 {
-padding: 15px 10px;
-background-color: transparent;
-  color: transparent;
-border: transparent;
-
-  
-}
-#nodistraction {
-padding: 25px 400px;
-background-color: transparent;
-  color: transparent;
-border: transparent;
-  
-}
-#fullscreenButton {
-padding: 8px 16px;
-background-color: transparent;
-  color: red;
-transition-duration: 0.4s;
-}
-#fullscreenButton:hover {
-  background-color: blue; /* Green */
-  color: white;
-}
+  #nodistraction2 {
+    padding: 15px 10px;
+    background-color: transparent;
+    color: transparent;
+    border: transparent;
+  }
+  #nodistraction {
+    padding: 25px 400px;
+    background-color: transparent;
+    color: transparent;
+    border: transparent;
+  }
+  #fullscreenButton {
+    padding: 8px 16px;
+    background-color: transparent;
+    color: red;
+    transition-duration: 0.4s;
+  }
+  #fullscreenButton:hover {
+    background-color: blue; /* Green */
+    color: white;
+  }
 </style>
 
 <script>
   var player;
+  var showCount = 0; // Add this line
+  var correctAnswers = ['B', 'D', 'A']; // Initial correct answers
+
   function onYouTubeIframeAPIReady() {
     player = new YT.Player('ytplayer', {
       events: {
@@ -86,11 +84,7 @@ transition-duration: 0.4s;
     }
   }
 
-
-  var player;
-  var correctAnswers = ['B', 'D', 'A']; // Initial correct answers
-
-window.addEventListener('message', function(event) {
+  window.addEventListener('message', function(event) {
     // Parse the data from the event
     var data = event.data.split(':-');
 
@@ -100,10 +94,7 @@ window.addEventListener('message', function(event) {
       correctAnswers[parseInt(data[0]) - 1] = data[1];
     }
     console.log('correctAnswers after update:', correctAnswers);
-}, false);
-
-
-
+  }, false);
 
   function showButtons() {
     var buttons = document.getElementsByTagName('button');
@@ -112,32 +103,30 @@ window.addEventListener('message', function(event) {
     }
     document.getElementById('overlay').style.display = 'block';
     setTimeout(hideButtons, 10000); // Hide buttons after 10 seconds
-}
+  }
 
-function hideButtons() {
+  function hideButtons() {
     var overlay = document.getElementById('overlay');
     var buttons = overlay.getElementsByTagName('button');
     for (var i = 0; i < buttons.length; i++) {
       buttons[i].style.display = 'none'; // Hide buttons
     }
     overlay.style.display = 'none'; // Hide overlay
-}
+  }
 
-
-function checkAnswer(answer) {
-console.log('checkAnswer called with:', answer);
+  function checkAnswer(answer) {
+    console.log('checkAnswer called with:', answer);
     var result = document.getElementById('result');
     if (answer == correctAnswers[showCount]) {
-      
       result.textContent = "Correct answer!";
       result.style.color = 'white';
       result.style.background = 'green';
-button.style.backgroundColor = 'green';
+      button.style.backgroundColor = 'green';
     } else {
       result.textContent = "Incorrect answer.";
       result.style.color = 'white';
       result.style.background = 'red';
-button.style.backgroundColor = 'red';
+      button.style.backgroundColor = 'red';
     }
     result.style.display = 'block'; // Show result immediately
     setTimeout(function() {
@@ -146,15 +135,14 @@ button.style.backgroundColor = 'red';
     }, 5000); // Hide result and buttons after 5 seconds
     showCount++;
     console.log('showCount after increment:', showCount);
-}
-
+  }
 
   var tag = document.createElement('script');
   tag.src = "https://www.youtube.com/iframe_api";
   var firstScriptTag = document.getElementsByTagName('script')[0];
   firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-document.getElementById('fullscreenButton').addEventListener('click', function() {
+  document.getElementById('fullscreenButton').addEventListener('click', function() {
     var elem = document.getElementById('player');
     if (!document.fullscreenElement) {
         if (elem.requestFullscreen) {
@@ -179,12 +167,11 @@ document.getElementById('fullscreenButton').addEventListener('click', function()
         }
         document.getElementById('fullscreenButton').innerText = 'Go Fullscreen';
     }
-});
-
+  });
 </script>
-
 
 </body>
 </html>
+
 
 
